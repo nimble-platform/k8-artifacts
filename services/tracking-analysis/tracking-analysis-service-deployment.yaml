@@ -1,0 +1,46 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f services/docker-compose-prod-fmp.yml
+    kompose.version: 1.7.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: tracking-analysis-service
+  name: tracking-analysis-service
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: tracking-analysis-service
+    spec:
+      containers:
+      - env:
+        - name: CONFIG_SERVER_FAILFAST
+          value: "true"
+        - name: CONFIG_SERVER_URI
+          value: http://config-server:8888
+        - name: DISCOVERY_ENABLED
+          value: "true"
+        - name: DISCOVERY_PREFER_IP
+          value: "false"
+        - name: DISCOVERY_SERVER_URI
+          value: http://service-discovery:8761
+        - name: LOGSTASH_URI
+          value: logstash:5000
+        - name: SPRING_PROFILES_ACTIVE
+          value: docker
+        - name: _JAVA_OPTIONS
+          value: -Xmx128m -Xms50m
+        envFrom:
+          - configMapRef:
+              name: global-config
+        image: nimbleplatform/tracking-analysis-service:latest
+        name: tracking-analysis-service
+        ports:
+        - containerPort: 8091
+      restartPolicy: Always
+status: {}
