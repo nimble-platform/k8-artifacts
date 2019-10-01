@@ -1,0 +1,72 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.bluemix.net/client-max-body-size: 512m
+    ingress.bluemix.net/redirect-to-https: "True"
+    ingress.bluemix.net/rewrite-path: |
+      serviceName=keycloak rewrite=/;
+      serviceName=catalogue-service rewrite=/;
+      serviceName=business-process-service rewrite=/;
+      serviceName=identity-service rewrite=/;
+      serviceName=data-aggregation-service rewrite=/;
+      serviceName=trust-service rewrite=/;
+      serviceName=indexing-service rewrite=/;
+      serviceName=tracking-analysis-service rewrite=/;
+      serviceName=data-channel-service rewrite=/;
+      serviceName=frontend-service rewrite=/;
+  name: nimble-trip
+spec:
+  rules:
+  - host: nimble-trip.eu-gb.containers.appdomain.cloud
+    http:
+      paths:
+      - backend:
+          serviceName: keycloak
+          servicePort: 8080
+        path: /
+      - backend:
+          serviceName: solr
+          servicePort: 80
+        path: /solr
+      - backend:
+          serviceName: catalogue-service
+          servicePort: 8095
+        path: /api/catalog
+      - backend:
+          serviceName: business-process-service
+          servicePort: 8085
+        path: /api/business-process
+      - backend:
+          serviceName: identity-service
+          servicePort: 9096
+        path: /api/identity
+      - backend:
+          serviceName: data-aggregation-service
+          servicePort: 9099
+        path: /api/data-aggregation
+      - backend:
+          serviceName: trust-service
+          servicePort: 9098
+        path: /api/trust
+      - backend:
+          serviceName: indexing-service
+          servicePort: 8080
+        path: /api/indexing-service
+      - backend:
+          serviceName: tracking-analysis-service
+          servicePort: 8091
+        path: /api/tracking-analysis-service
+      - backend:
+          serviceName: data-channel-service
+          servicePort: 8888
+        path: /api/data-channel
+      - backend:
+          serviceName: frontend-service
+          servicePort: 8080
+        path: /frontend
+  tls:
+  - hosts:
+    - nimble-trip.eu-gb.containers.appdomain.cloud
+    secretName: nimble-trip
+
