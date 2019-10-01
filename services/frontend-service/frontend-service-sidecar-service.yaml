@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f services/docker-compose-prod-fmp.yml
+    kompose.version: 1.7.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: frontend-service-sidecar
+  name: frontend-service-sidecar
+spec:
+  ports:
+  - name: "9097"
+    port: 9097
+    targetPort: 9097
+  selector:
+    io.kompose.service: frontend-service-sidecar
+status:
+  loadBalancer: {}

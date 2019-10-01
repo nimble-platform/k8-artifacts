@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f services/docker-compose-prod-fmp.yml
+    kompose.version: 1.7.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: frontend-service-sidecar
+  name: frontend-service-sidecar
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: frontend-service-sidecar
+    spec:
+      containers:
+      - env:
+        - name: CONFIG_SERVER_FAILFAST
+          value: "true"
+        - name: CONFIG_SERVER_URI
+          value: http://config-server:8888
+        - name: DISCOVERY_ENABLED
+          value: "true"
+        - name: DISCOVERY_PREFER_IP
+          value: "false"
+        - name: DISCOVERY_SERVER_URI
+          value: http://service-discovery:8761
+        - name: LOGSTASH_URI
+          value: logstash:5000
+        - name: SIDECAR_APP_HEALTH_URI
+          value: http://frontend-service:8080/health.json
+        - name: SIDECAR_APP_HOMEPAGE_URI
+          value: http://frontend-service:8080/
+        - name: SIDECAR_APP_HOST
+          value: frontend-service
+        - name: SIDECAR_APP_PORT
+          value: "8080"
+        - name: SIDECAR_NAME
+          value: frontend-service
+        - name: SPRING_PROFILES_ACTIVE
+          value: docker
+        - name: _JAVA_OPTIONS
+          value: -Xmx768m -Xms50m
+        image: nimbleplatform/sidecar:latest
+        name: frontend-service-sidecar
+        ports:
+        - containerPort: 9097
+      restartPolicy: Always
+status: {}
