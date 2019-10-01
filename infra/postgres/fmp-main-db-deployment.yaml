@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f infra/docker-compose-prod-fmp.yml
+    kompose.version: 1.7.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: efac-main-db
+  name: efac-main-db
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: efac-main-db
+    spec:
+      containers:
+      - envFrom:
+          - configMapRef:
+              name: efac-main-db-env-vars
+        image: postgres:10
+        name: efac-main-db
+        ports:
+        - containerPort: 5432
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: efac-main-db
+      restartPolicy: Always
+      volumes:
+      - name: efac-main-db
+        # Uncomment if using PVC (Configure the fmp-main-db-persistentvolumeclaim.yaml)
+        # persistentVolumeClaim:
+        #   claimName: fmp-main-db
+        hostPath:
+          path: /kubernetesStorage/posgres/
+status: {}
