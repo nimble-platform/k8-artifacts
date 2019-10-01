@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f infra/docker-compose-prod-fmp.yml
+    kompose.version: 1.7.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: service-discovery
+  name: service-discovery
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: service-discovery
+    spec:
+      containers:
+      - env:
+        - name: CONFIG_SERVER_URI
+          valueFrom:
+            configMapKeyRef:
+              key: CONFIG_SERVER_URI
+              name: service-discovery-env-vars
+        - name: DISCOVERY_PREFER_IP
+          valueFrom:
+            configMapKeyRef:
+              key: DISCOVERY_PREFER_IP
+              name: service-discovery-env-vars
+        - name: DISCOVERY_SERVER_URI
+          valueFrom:
+            configMapKeyRef:
+              key: DISCOVERY_SERVER_URI
+              name: service-discovery-env-vars
+        - name: LOGSTASH_URI
+          valueFrom:
+            configMapKeyRef:
+              key: LOGSTASH_URI
+              name: service-discovery-env-vars
+        - name: SPRING_PROFILES_ACTIVE
+          valueFrom:
+            configMapKeyRef:
+              key: SPRING_PROFILES_ACTIVE
+              name: service-discovery-env-vars
+        image: nimbleplatform/service-discovery:latest
+        name: service-discovery
+        ports:
+        - containerPort: 8761
+        resources: {}
+      restartPolicy: Always
+status: {}
