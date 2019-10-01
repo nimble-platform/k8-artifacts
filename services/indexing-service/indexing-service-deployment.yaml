@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f services/docker-compose-prod-fmp.yml
+    kompose.version: 1.7.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: indexing-service
+  name: indexing-service
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: indexing-service
+    spec:
+      containers:
+      - env:
+        - name: CONFIG_SERVER_FAILFAST
+          value: "true"
+        - name: CONFIG_SERVER_URI
+          value: http://config-server:8888
+        - name: DISCOVERY_ENABLED
+          value: "true"
+        - name: DISCOVERY_PREFER_IP
+          value: "false"
+        - name: DISCOVERY_SERVER_URI
+          value: http://service-discovery:8761
+        - name: LOGSTASH_URI
+          value: logstash:5000
+        - name: SOLR_HOST
+          value: http://solr:8983/solr/
+        - name: SPRING_PROFILES_ACTIVE
+          value: docker
+        - name: _JAVA_OPTIONS
+          value: -Xmx1024m -Xms50m
+        envFrom:
+          - configMapRef:
+              name: global-config
+        image: nimbleplatform/indexing-service:efactory
+        name: indexing-service
+        ports:
+        - containerPort: 8080
+      restartPolicy: Always
+status: {}
