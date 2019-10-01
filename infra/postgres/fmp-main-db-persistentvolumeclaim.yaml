@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: efac-main-db
+  name: efac-main-db
+spec:
+  storageClassName: ibmc-file-custom
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+      iops: 1000 
+
+status: {}
