@@ -1,0 +1,51 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f infra/docker-compose-prod-fmp.yml
+    kompose.version: 1.7.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: gateway-proxy
+  name: gateway-proxy
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: gateway-proxy
+    spec:
+      containers:
+      - env:
+        - name: CONFIG_SERVER_URI
+          valueFrom:
+            configMapKeyRef:
+              key: CONFIG_SERVER_URI
+              name: gateway-proxy-env-vars
+        - name: DISCOVERY_PREFER_IP
+          valueFrom:
+            configMapKeyRef:
+              key: DISCOVERY_PREFER_IP
+              name: gateway-proxy-env-vars
+        - name: DISCOVERY_SERVER_URI
+          valueFrom:
+            configMapKeyRef:
+              key: DISCOVERY_SERVER_URI
+              name: gateway-proxy-env-vars
+        - name: LOGSTASH_URI
+          valueFrom:
+            configMapKeyRef:
+              key: LOGSTASH_URI
+              name: gateway-proxy-env-vars
+        - name: SPRING_PROFILES_ACTIVE
+          valueFrom:
+            configMapKeyRef:
+              key: SPRING_PROFILES_ACTIVE
+              name: gateway-proxy-env-vars
+        image: nimbleplatform/gateway-proxy:latest
+        name: gateway-proxy
+        resources: {}
+      restartPolicy: Always
+status: {}
