@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose-prod-fmp.yml
+    kompose.version: 1.7.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: keycloak
+  name: keycloak
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: keycloak
+    spec:
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: keycloak-configmap
+        image: jboss/keycloak:3.4.3.Final
+        name: keycloak
+        ports:
+        - containerPort: 9990
+        - containerPort: 8443
+        resources: {}
+      restartPolicy: Always
+status: {}

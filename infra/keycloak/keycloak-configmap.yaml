@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-configmap
+  labels:
+    io.kompose.service: keycloak
+data:
+
+#replace with config
