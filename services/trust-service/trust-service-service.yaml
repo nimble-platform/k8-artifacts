@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f services/docker-compose-prod-fmp.yml
+    kompose.version: 1.7.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: trust-service
+  name: trust-service
+spec:
+  ports:
+  - name: "9098"
+    port: 9098
+    targetPort: 9098
+  selector:
+    io.kompose.service: trust-service
+status:
+  loadBalancer: {}
