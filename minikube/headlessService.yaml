@@ -1,0 +1,22 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: minikube
+spec:
+  clusterIP: None
+  ports:
+  - name: "http"
+    protocol: TCP
+    port: 80
+    targetPort: http
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: minikube
+subsets:
+- addresses:
+  - ip: 192.168.99.100
+  ports:
+  - name: http
+    port: 80
