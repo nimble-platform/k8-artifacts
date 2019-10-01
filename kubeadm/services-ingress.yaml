@@ -1,0 +1,75 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/proxy-body-size: 512m
+    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "1000"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "1000"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "1000"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "1000"
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # ingress.kubernetes.io/rewrite-target: |
+    #   serviceName=keycloak rewrite=/;
+    #   serviceName=catalogue-service rewrite=/;
+    #   serviceName=business-process-service rewrite=/;
+    #   serviceName=identity-service rewrite=/;
+    #   serviceName=data-aggregation-service rewrite=/;
+    #   serviceName=trust-service rewrite=/;
+    #   serviceName=indexing-service rewrite=/;
+    #   serviceName=tracking-analysis-service rewrite=/;
+    #   serviceName=data-channel-service rewrite=/;
+    #   serviceName=frontend-service rewrite=/;
+  name: services
+spec:
+  rules:
+  - host:
+    http: 
+      paths:
+      # - backend:
+      #     serviceName: keycloak
+      #     servicePort: 8080
+      #   path: /
+      # - backend:
+      #     serviceName: solr
+      #     servicePort: 80
+      #   path: /solr(/|$)(.*)
+      - backend:
+          serviceName: catalogue-service
+          servicePort: 8095
+        path: /api/catalog(/|$)(.*)
+      - backend:
+          serviceName: business-process-service
+          servicePort: 8085
+        path: /api/business-process(/|$)(.*)
+      - backend:
+          serviceName: identity-service
+          servicePort: 9096
+        path: /api/identity(/|$)(.*)
+      - backend:
+          serviceName: data-aggregation-service
+          servicePort: 9099
+        path: /api/data-aggregation(/|$)(.*)
+      - backend:
+          serviceName: trust-service
+          servicePort: 9098
+        path: /api/trust(/|$)(.*)
+      - backend:
+          serviceName: indexing-service
+          servicePort: 8080
+        path: /api/indexing-service(/|$)(.*)
+      - backend:
+          serviceName: tracking-analysis-service
+          servicePort: 8091
+        path: /api/tracking-analysis-service(/|$)(.*)
+      - backend:
+          serviceName: data-channel-service
+          servicePort: 8888
+        path: /api/data-channel(/|$)(.*)
+      - backend:
+          serviceName: frontend-service
+          servicePort: 8080
+        path: /frontend(/|$)(.*)
+
+
